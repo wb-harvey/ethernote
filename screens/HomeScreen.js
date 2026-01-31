@@ -12,7 +12,7 @@ import { supabase } from '../lib/supabase';
 import NoteItem from '../components/NoteItem';
 
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -88,7 +88,7 @@ export default function HomeScreen() {
                 renderItem={({ item }) => (
                     <NoteItem
                         note={item}
-                        onPress={() => console.log('Note pressed:', item.id)}
+                        onPress={() => navigation.navigate('NoteDetail', { noteId: item.id })}
                     />
                 )}
                 keyExtractor={(item) => item.id}
