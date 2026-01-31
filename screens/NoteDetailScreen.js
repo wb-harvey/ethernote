@@ -184,8 +184,12 @@ export default function NoteDetailScreen({ route, navigation }) {
                                 style={[styles.actionButton, styles.editButton]}
                                 onPress={() => setIsEditing(true)}
                                 disabled={saving}
+                                activeOpacity={0.7}
+                                accessible={true}
+                                accessibilityRole="button"
+                                accessibilityLabel="Edit note"
                             >
-                                <Text style={styles.actionButtonText}>✏️ Edit</Text>
+                                <Text style={styles.actionButtonText}>✏️</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.actionButton, styles.deleteButton]}
@@ -196,7 +200,7 @@ export default function NoteDetailScreen({ route, navigation }) {
                                 accessibilityRole="button"
                                 accessibilityLabel="Delete note"
                             >
-                                <Text style={styles.deleteButtonText}>🗑️ Delete</Text>
+                                <Text style={styles.deleteButtonText}>🗑️</Text>
                             </TouchableOpacity>
                         </>
                     ) : (
