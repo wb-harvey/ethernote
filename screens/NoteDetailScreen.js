@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -23,6 +23,7 @@ export default function NoteDetailScreen({ route, navigation }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [error, setError] = useState(null);
+    const titleInputRef = useRef(null);
 
     useEffect(() => {
         fetchNote();
@@ -49,6 +50,16 @@ export default function NoteDetailScreen({ route, navigation }) {
             setLoading(false);
         }
     };
+
+    // Auto-focus title input when new note is loaded
+    useEffect(() => {
+        if (isNew && !loading && titleInputRef.current) {
+            // Small delay to ensure the input is rendered
+            setTimeout(() => {
+                titleInputRef.current?.focus();
+            }, 100);
+        }
+    }, [isNew, loading]);
 
     const handleSave = async () => {
         if (!title.trim()) {
@@ -234,6 +245,7 @@ export default function NoteDetailScreen({ route, navigation }) {
                     <>
                         <Text style={styles.label}>Title</Text>
                         <TextInput
+                            ref={titleInputRef}
                             style={styles.titleInput}
                             value={title}
                             onChangeText={setTitle}
