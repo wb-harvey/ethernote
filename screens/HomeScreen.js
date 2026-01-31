@@ -6,6 +6,7 @@ import {
     StyleSheet,
     RefreshControl,
     ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '../lib/supabase';
@@ -55,6 +56,31 @@ export default function HomeScreen({ navigation }) {
         fetchNotes();
     }, []);
 
+    const handleCreateNote = async () => {
+        try {
+            // Create a new note with default values
+            const { data, error } = await supabase
+                .from('notes')
+                .insert([
+                    {
+                        title: 'Untitled Note',
+                        content: '',
+                        created_at: new Date().toISOString(),
+                    }
+                ])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Navigate to the new note's detail page in edit mode
+            navigation.navigate('NoteDetail', { noteId: data.id, isNew: true });
+        } catch (err) {
+            console.error('Error creating note:', err);
+            setError('Failed to create note. Please try again.');
+        }
+    };
+
     const renderEmptyState = () => (
         <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>📝</Text>
@@ -86,10 +112,22 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" />
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Ethernote</Text>
-                <Text style={styles.headerSubtitle}>
-                    {notes.length} {notes.length === 1 ? 'note' : 'notes'}
-                </Text>
+                <View style={styles.headerContent}>
+                    <Text style={styles.headerTitle}>Ethernote</Text>
+                    <Text style={styles.headerSubtitle}>
+                        {notes.length} {notes.length === 1 ? 'note' : 'notes'}
+                    </Text>
+                </View>
+                <TouchableOpacity
+                    style={styles.newButton}
+                    onPress={handleCreateNote}
+                    activeOpacity={0.7}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Create new note"
+                >
+                    <Text style={styles.newButtonText}>+ New</Text>
+                </TouchableOpacity>
             </View>
 
             <FlatList
@@ -141,6 +179,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: '#e0e0e0',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    headerContent: {
+        flex: 1,
     },
     headerTitle: {
         fontSize: 32,
@@ -151,6 +195,18 @@ const styles = StyleSheet.create({
     headerSubtitle: {
         fontSize: 16,
         color: '#666',
+    },
+    newButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 8,
+        cursor: 'pointer',
+    },
+    newButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff',
     },
     listContent: {
         paddingVertical: 8,

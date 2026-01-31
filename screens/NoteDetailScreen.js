@@ -15,11 +15,11 @@ import { StatusBar } from 'expo-status-bar';
 import { supabase } from '../lib/supabase';
 
 export default function NoteDetailScreen({ route, navigation }) {
-    const { noteId } = route.params;
+    const { noteId, isNew = false } = route.params;
     const [note, setNote] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(isNew); // Start in edit mode if new note
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [error, setError] = useState(null);
