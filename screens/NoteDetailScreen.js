@@ -23,7 +23,7 @@ export default function NoteDetailScreen({ route, navigation }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [error, setError] = useState(null);
-    const titleInputRef = useRef(null);
+    const contentInputRef = useRef(null);
 
     useEffect(() => {
         fetchNote();
@@ -51,12 +51,12 @@ export default function NoteDetailScreen({ route, navigation }) {
         }
     };
 
-    // Auto-focus title input when new note is loaded
+    // Auto-focus content input when new note is loaded
     useEffect(() => {
-        if (isNew && !loading && titleInputRef.current) {
+        if (isNew && !loading && contentInputRef.current) {
             // Small delay to ensure the input is rendered
             setTimeout(() => {
-                titleInputRef.current?.focus();
+                contentInputRef.current?.focus();
             }, 100);
         }
     }, [isNew, loading]);
@@ -245,7 +245,6 @@ export default function NoteDetailScreen({ route, navigation }) {
                     <>
                         <Text style={styles.label}>Title</Text>
                         <TextInput
-                            ref={titleInputRef}
                             style={styles.titleInput}
                             value={title}
                             onChangeText={setTitle}
@@ -256,6 +255,7 @@ export default function NoteDetailScreen({ route, navigation }) {
 
                         <Text style={styles.label}>Content</Text>
                         <TextInput
+                            ref={contentInputRef}
                             style={styles.contentInput}
                             value={content}
                             onChangeText={setContent}
