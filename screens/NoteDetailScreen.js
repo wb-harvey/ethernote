@@ -84,21 +84,31 @@ export default function NoteDetailScreen({ route, navigation }) {
     };
 
     const handleDelete = () => {
-        Alert.alert(
-            'Delete Note',
-            'Are you sure you want to delete this note? This action cannot be undone.',
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: confirmDelete,
-                },
-            ]
-        );
+        // Use native confirm for web, Alert for mobile
+        if (Platform.OS === 'web') {
+            const confirmed = window.confirm(
+                'Are you sure you want to delete this note? This action cannot be undone.'
+            );
+            if (confirmed) {
+                confirmDelete();
+            }
+        } else {
+            Alert.alert(
+                'Delete Note',
+                'Are you sure you want to delete this note? This action cannot be undone.',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: confirmDelete,
+                    },
+                ]
+            );
+        }
     };
 
     const confirmDelete = async () => {
@@ -181,6 +191,10 @@ export default function NoteDetailScreen({ route, navigation }) {
                                 style={[styles.actionButton, styles.deleteButton]}
                                 onPress={handleDelete}
                                 disabled={saving}
+                                activeOpacity={0.7}
+                                accessible={true}
+                                accessibilityRole="button"
+                                accessibilityLabel="Delete note"
                             >
                                 <Text style={styles.deleteButtonText}>🗑️ Delete</Text>
                             </TouchableOpacity>
@@ -192,7 +206,7 @@ export default function NoteDetailScreen({ route, navigation }) {
                                 onPress={handleCancel}
                                 disabled={saving}
                             >
-                                <Text style={styles.actionButtonText}>Cancel</Text>
+                                <Text style={styles.cancelButtonText}>Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.actionButton, styles.saveButton]}
@@ -324,19 +338,24 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 8,
+        cursor: 'pointer',
+        zIndex: 10,
     },
     editButton: {
         backgroundColor: '#007AFF',
     },
     deleteButton: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#FF3B30',
+        backgroundColor: '#FF3B30',
     },
     cancelButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: '#666',
+    },
+    cancelButtonText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#666',
     },
     saveButton: {
         backgroundColor: '#34C759',
@@ -351,7 +370,7 @@ const styles = StyleSheet.create({
     deleteButtonText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#FF3B30',
+        color: '#fff',
     },
     saveButtonText: {
         fontSize: 14,

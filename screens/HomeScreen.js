@@ -41,6 +41,15 @@ export default function HomeScreen({ navigation }) {
         fetchNotes();
     }, []);
 
+    // Refresh notes when screen comes into focus (e.g., after deleting a note)
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchNotes();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchNotes();
